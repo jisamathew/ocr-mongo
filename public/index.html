@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR App</title>
+
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>Upload a PDF or Image</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/pdf,image/*">
+        <button type="submit">Upload</button>
+    </form>
+    <div id="progress"></div>
+    <div id="result"></div>
+
+    
+    <!-- <h2>Bill of Lading Log</h2>
+    <label>Bill of Lading Number: <b>{{ BOL }}</b></label>
+     -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <h2>Image Text Extraction</h2>
+                <p>Upload Image File:</p>
+                <button id="uploadImgBtn" type="button">Select Image...</button>
+                <input id="uploadImg" type="file" accept="image/*">
+                <hr>
+                <small><strong>Image Text Extraction</strong></small>
+                <div class="progress">
+                    <div id="ocrImgProgress" class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                </div>
+                <small id="ocrImgProgressStatus" class="small"></small>
+                <hr>
+                <div id="img-preview" class="border text-center"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <h2>PDF Text Extraction</h2>
+                <p>Upload PDF File:</p>
+                <button id="uploadPDFBtn" type="button">Select PDF...</button>
+                <input id="uploadPDF" type="file" accept=".pdf">
+                <hr>
+                <small><strong>Page Text Extraction</strong></small>
+                <div class="progress">
+                    <div id="ocrPageProgress" class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                </div>
+                <small id="ocrPageProgressStatus" class="small"></small>
+                <hr>
+                <div id="page-preview" class="border text-center"></div>
+            </div>
+        </div>
+    </div>
+    
+    <hr>
+    <div id="BOLInfo" style="display: none;">
+        <h3>Extracted Bill of Lading Information</h3>
+        <!-- Form inputs for BOL information -->
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered" id="customers">
+            <tbody id="docList">
+                <!-- Placeholder for table data -->
+            </tbody>
+        </table>
+    </div>
+    
+    <hr>
+    <div id="BOLData" style="display: none;">
+        <button id="downloadTextContent" type="button">Export as Plain Text</button>
+        <button id="clearTextBtn" type="button">Clear</button>
+        <textarea id="inputText"></textarea>
+    </div>
+    
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const progressBar = document.getElementById('progress');
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+              .then(data => {
+                  progressBar.innerHTML = '';
+                  const resultDiv = document.getElementById('result');
+                  resultDiv.textContent = JSON.stringify(data.document, null, 2);
+              }).catch(err => {
+                  console.error(err);
+                  progressBar.textContent = 'Error processing the file';
+              });
+        });
+    </script>
+    <script>
+        // Function to handle image upload
+        document.getElementById('uploadImgBtn').addEventListener('click', function() {
+            document.getElementById('uploadImg').click();
+        });
+    
+        document.getElementById('uploadImg').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const imgPreview = document.getElementById('img-preview');
+    
+            // Clear previous preview
+            imgPreview.innerHTML = '';
+    
+            // Display image preview
+            const imgElement = document.createElement('img');
+            imgElement.src = URL.createObjectURL(file);
+            imgElement.onload = function() {
+                URL.revokeObjectURL(this.src);
+            };
+            imgPreview.appendChild(imgElement);
+        });
+    </script>
+    
+</body>
+</html>
