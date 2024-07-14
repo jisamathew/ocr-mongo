@@ -28,8 +28,11 @@ module.exports = {
     }
   },
   devServer: {
+    // Other devServer options...
     static: path.join(__dirname, 'public'),
     compress: true,
-    port: 3000
-  }
+    port: 3000,
+    allowedHosts: 'all', // Allow all hosts
+    // host: '0.0.0.0', // Optional: to allow access from any network
+  },
 };
