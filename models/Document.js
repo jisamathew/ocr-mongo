@@ -9,14 +9,14 @@ const documentSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    progress: {
-        type: Number,
-        default: 0
-    },
-    status: {
-        type: String,
-        default: 'Processing'
-    },
+    // progress: {
+    //     type: Number,
+    //     default: 0
+    // },
+    // status: {
+    //     type: String,
+    //     default: 'Processing'
+    // },
     createdAt: {
         type: Date,
         default: Date.now

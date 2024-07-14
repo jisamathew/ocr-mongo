@@ -1,127 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OCR App</title>
-
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
+   <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
     <h1>Upload a PDF or Image</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="file" accept="application/pdf,image/*">
-        <button type="submit">Upload</button>
-    </form>
-    <div id="progress"></div>
-    <div id="result"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+          <h2>Image Text Extraction</h2>
 
-    
-    <!-- <h2>Bill of Lading Log</h2>
-    <label>Bill of Lading Number: <b>{{ BOL }}</b></label>
-     -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <h2>Image Text Extraction</h2>
-                <p>Upload Image File:</p>
-                <button id="uploadImgBtn" type="button">Select Image...</button>
-                <input id="uploadImg" type="file" accept="image/*">
-                <hr>
-                <small><strong>Image Text Extraction</strong></small>
-                <div class="progress">
-                    <div id="ocrImgProgress" class="progress-bar progress-bar-striped progress-bar-animated"></div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12 mt-3">
+                <div class="card rounded-0">
+                  <div class="card-header p-1">
+                    ┏🠉┓ <strong>Upload Image File</strong>
+                  </div>
+                  <div id="uploadFileContentCard" class="card-body p-2">
+                    <div class="row">
+                      <div class="col-lg-6 col-md-6 col-sm-6 mr-0">
+                        <p class="w-100">
+                          <button
+                            id="uploadImgBtn"
+                            type="button"
+                            class="btn btn-sm btn-outline-primary rounded-0"
+                          >
+                            <small>📂 Select Image…</small>
+                            <input
+                              id="uploadImg"
+                              type="file"
+                              accept="image/*"
+                              (change)="uploadImageChange($event)"
+                            />
+                          </button>
+                        </p>
+                        <hr />
+                        <small><strong>🔄 Image Text Extraction</strong></small>
+                        <div class="progress">
+                          <div
+                            id="ocrImgProgress"
+                            class="progress-bar progress-bar-striped progress-bar-animated"
+                          ></div>
+                        </div>
+                        <small id="ocrImgProgressStatus" class="small"></small>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-6">
+                        <!-- <hr /> -->
+                        <div
+                          id="img-preview"
+                          class="small border text-center"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <small id="ocrImgProgressStatus" class="small"></small>
-                <hr>
-                <div id="img-preview" class="border text-center"></div>
+              </div>
             </div>
+          </div>
+          
         </div>
-    </div>
-    
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <h2>PDF Text Extraction</h2>
-                <p>Upload PDF File:</p>
-                <button id="uploadPDFBtn" type="button">Select PDF...</button>
-                <input id="uploadPDF" type="file" accept=".pdf">
-                <hr>
-                <small><strong>Page Text Extraction</strong></small>
+<div class="col-lg-6 col-md-6 col-sm-6">
+  <h2>PDF Text Extraction</h2>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-12 mt-3">
+        <div class="card rounded-0">
+          <div class="card-header p-1">
+            ┏🠉┓ <strong>Upload PDF File</strong>
+          </div>
+          <div id="uploadFileContentCard" class="card-body p-2">
+            <div class="row">
+              <div class="col-lg-4 col-md-4 col-sm-4 mr-0">
+                <p class="w-100">
+                  <button
+                    id="uploadPDFBtn"
+                    type="button"
+                    class="btn btn-sm btn-outline-primary rounded-0"
+                  >
+                    <small>📂 Select PDF…</small>
+                    <input
+                      id="uploadPDF"
+                      type="file"
+                      (change)="uploadPDFChange($event)"
+                      accept=".pdf,.PDF"
+                    />
+                  </button>
+                </p>
+                <hr />
+                <small><strong>🔄 Page Text Extraction</strong></small>
                 <div class="progress">
-                    <div id="ocrPageProgress" class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                  <div
+                    id="ocrPageProgress"
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                  ></div>
                 </div>
                 <small id="ocrPageProgressStatus" class="small"></small>
-                <hr>
-                <div id="page-preview" class="border text-center"></div>
+              </div>
+
+              <div class="col-lg-4 col-md-4 col-sm-4 mr-0">
+                <div
+                  id="page-preview"
+                  class="small border text-center"
+                ></div>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 mr-0">
+                <small id="processedPages" class="border small"></small>
+                <span id="pageLoadingSignal">
+                  <span class="spinner-border spinner-border-sm"> </span
+                  >&nbsp;<small class="text-muted"
+                    >Processing Page <span id="currentPageNo">?</span
+                    ><b
+                      >&nbsp;/&nbsp;
+                      <span id="totalPages">?</span>&nbsp;</b
+                    ></small
+                  >
+                </span>
+                <!-- <hr/> -->
+                <small class="text-dark" style="float: right"
+                  >📄 Processed Page(s)</small
+                >
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    
-    <hr>
-    <div id="BOLInfo" style="display: none;">
-        <h3>Extracted Bill of Lading Information</h3>
-        <!-- Form inputs for BOL information -->
+  </div>
+</div>
+       
+      </div>
     </div>
-    
-    <div class="table-responsive">
-        <table class="table table-bordered" id="customers">
-            <tbody id="docList">
-                <!-- Placeholder for table data -->
-            </tbody>
-        </table>
-    </div>
-    
-    <hr>
-    <div id="BOLData" style="display: none;">
-        <button id="downloadTextContent" type="button">Export as Plain Text</button>
-        <button id="clearTextBtn" type="button">Clear</button>
-        <textarea id="inputText"></textarea>
-    </div>
-    
 
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const progressBar = document.getElementById('progress');
+    <hr />
 
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json())
-              .then(data => {
-                  progressBar.innerHTML = '';
-                  const resultDiv = document.getElementById('result');
-                  resultDiv.textContent = JSON.stringify(data.document, null, 2);
-              }).catch(err => {
-                  console.error(err);
-                  progressBar.textContent = 'Error processing the file';
-              });
-        });
-    </script>
-    <script>
-        // Function to handle image upload
-        document.getElementById('uploadImgBtn').addEventListener('click', function() {
-            document.getElementById('uploadImg').click();
-        });
+    <div id="BOLData" style="display: none">
+      <button id="downloadTextContent" type="button">
+        Export as Plain Text
+      </button>
+      <button id="clearTextBtn" type="button">Clear</button>
+      <textarea id="inputText"></textarea>
+    </div>
+    <!-- <script src='https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js'></script>  
     
-        document.getElementById('uploadImg').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const imgPreview = document.getElementById('img-preview');
-    
-            // Clear previous preview
-            imgPreview.innerHTML = '';
-    
-            // Display image preview
-            const imgElement = document.createElement('img');
-            imgElement.src = URL.createObjectURL(file);
-            imgElement.onload = function() {
-                URL.revokeObjectURL(this.src);
-            };
-            imgPreview.appendChild(imgElement);
-        });
-    </script>
-    
-</body>
+  
+    <script type=module src="./tesseractWorker.js" ></script>
+    <script src="../index.js"></script> -->
+  <!-- Load the bundled JavaScript module -->
+  <script src="./bundle.js"></script>
+  <script src='./assets/lib/pdf/pdf.min.js'></script>
+     
+  
+  </body>
 </html>
